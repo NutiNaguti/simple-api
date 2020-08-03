@@ -31,7 +31,7 @@ func init() {
 	}
 
 	db = conn
-	db.Debug().AutoMigrate(&Account{}) // миграция бд
+	db.Debug().AutoMigrate(&Account{}, &Contacts{}) // миграция бд
 }
 
 // возвращает дескриптор объекта DB

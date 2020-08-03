@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/gorilla/mux"
-	"log"
 	"net/http"
 	"os"
 	"simple-api/app"
@@ -11,18 +10,12 @@ import (
 )
 
 func main() {
-	log.SetFlags(log.Lshortfile)
-
 	router := mux.NewRouter()
 	router.Use(app.JwtAuthentication) // добавляем middleware для проверки токена
 	router.HandleFunc("/api/user/new", controllers.CreateAccount)
 	router.HandleFunc("/api/user/login", controllers.Authenticate)
-
-	//TODO: Доделать прототип чата
-//--------------------------------------------------------------------------------------\\
-//	server := services.NewServer("/entry")
-//	go server.Listen()
-//--------------------------------------------------------------------------------------\\
+	router.HandleFunc("/api/user/add-contact", controllers.AddContacts)
+	router.HandleFunc("/api/user/get-contact", controllers.GetContacts)
 
 	port := os.Getenv("PORT") // Получить порт из файла .env (при отсутствии возвращается пустая строка)
 	if port == "" {

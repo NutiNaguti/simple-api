@@ -4,6 +4,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
+	"log"
 	"os"
 	u "simple-api/utils"
 	"strings"
@@ -96,7 +97,9 @@ func Login(email, password string) map[string]interface{} {
 	tk := &Token{UserID: account.ID}
 	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
 	tokenString, _ := token.SignedString([]byte(os.Getenv("token_password")))
+
 	account.Token = tokenString // сохранить токен в ответе
+	log.Println(account.Token)
 
 	resp := u.Message(true, "Logged in")
 	resp["account"] = account
