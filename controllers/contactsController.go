@@ -2,29 +2,38 @@ package controllers
 
 import (
 	"encoding/json"
+	"github.com/gorilla/mux"
 	"net/http"
 	"simple-api/models"
 	u "simple-api/utils"
+	"strconv"
 )
 
 var AddContacts = func(w http.ResponseWriter, r *http.Request) {
-	contacts := &models.Contacts{}
-	err := json.NewDecoder(r.Body).Decode(contacts)
+	user := r.Context().Value("user").(uint)  //Получение идентификатора пользователя, отправившего запрос
+	contact := &models.Contacts{}
+
+	err := json.NewDecoder(r.Body).Decode(contact)
 	if err != nil {
-		u.Respond(w, u.Message(false, "Invalid request"))
+		u.Respond(w, u.Message(false, "TError while decoding request body"))
+		return
 	}
 
-	resp := models.AddContact(contacts.PhoneNum, contacts.Name, contacts.Email)
+	contact.UserId = user
+	resp := contact.Create()
 	u.Respond(w, resp)
 }
 
-var GetContacts = func(w http.ResponseWriter, r *http.Request) {
-	contacts := &models.Contacts{}
-	err := json.NewDecoder(r.Body).Decode(contacts)
+var GetContactsFor = func(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	id, err := strconv.Atoi(params["id"])
 	if err != nil {
-		u.Respond(w, u.Message(false, "Invalid request"))
+		u.Respond(w, u.Message(false, "There was an error in your request"))
+		return
 	}
 
-	resp := models.GetContact(contacts.Email)
+	data := models.GetContacts(uint(id))
+	resp := u.Message(true, "Success")
+	resp["data"] = data
 	u.Respond(w, resp)
 }

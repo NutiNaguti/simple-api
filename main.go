@@ -12,10 +12,10 @@ import (
 func main() {
 	router := mux.NewRouter()
 	router.Use(app.JwtAuthentication) // добавляем middleware для проверки токена
-	router.HandleFunc("/api/user/new", controllers.CreateAccount)
-	router.HandleFunc("/api/user/login", controllers.Authenticate)
-	router.HandleFunc("/api/user/add-contact", controllers.AddContacts)
-	router.HandleFunc("/api/user/get-contact", controllers.GetContacts)
+	router.HandleFunc("/api/user/new", controllers.CreateAccount).Methods("POST")
+	router.HandleFunc("/api/user/login", controllers.Authenticate).Methods("POST")
+	router.HandleFunc("/api/user/add-contact", controllers.AddContacts).Methods("POST")
+	router.HandleFunc("/api/user/get-contact", controllers.GetContactsFor).Methods("GET")
 
 	port := os.Getenv("PORT") // Получить порт из файла .env (при отсутствии возвращается пустая строка)
 	if port == "" {
